@@ -1,0 +1,7 @@
+{
+  "name": "alicorp-conductor",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
