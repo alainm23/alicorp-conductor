@@ -1,7 +1,8 @@
 {
   "name": "alicorp-conductor",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }

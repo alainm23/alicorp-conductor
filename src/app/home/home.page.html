@@ -1,20 +1,33 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <ion-fab vertical="top" horizontal="end" slot="fixed">
+      <ion-fab-button size="small" color="light" (click)="call ()">
+        <ion-icon name="call"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button size="small" color="light" (click)="open_modal ()">
+        <img style="margin-left: 6px; width: 55%;" src="assets/img/grifo.png" alt="">
+      </ion-fab-button>
+    </ion-fab>
+
+    <ion-grid>
+    <ion-row class="ion-justify-content-center ion-no-margin">
+        <ion-col size="9" class="ion-text-center">
+        <h6 class="hora">{{ get_hora () }}</h6>
+        <p class="font_fecha">{{ get_fecha () }}</p>
+        </ion-col>
+        <ion-col size="12" size-md="10">
+        <h5 class="ion-text-center font_subtitulo">Hola Alberto</h5>
+        <p class="ion-text-center fecha">Tus rutas asignadas para hoy</p>
+        </ion-col>
+        <ion-col size="12" size-sm="6" size-lg="4" class="ion-no-padding margin_bajar">
+        <button class="btn_carga" *ngFor="let item of items" (click)="ver_picking (item)">
+          Cardex {{ item.fecha }}
+        </button>
+        <!-- <button class="btn_carga">Cardex</button>
+        <button class="btn_carga">Vendedor</button> -->
+        </ion-col>
+    </ion-row>
+    </ion-grid>
 </ion-content>
