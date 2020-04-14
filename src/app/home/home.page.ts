@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 // Services
 import { AuthService } from '../services/auth.service';
 import { DatabaseService } from '../services/database.service';
-import { NavController, LoadingController, ModalController } from '@ionic/angular';
+import { NavController, LoadingController, ModalController, AlertController } from '@ionic/angular';
 import * as moment from 'moment';
 import { CallService } from '../services/call.service';
+import { AngularFirestore } from '@angular/fire/firestore'
 
 // Modals
 import { CargaGasolinaPage } from '../modals/carga-gasolina/carga-gasolina.page';
@@ -23,7 +24,9 @@ export class HomePage implements OnInit {
       private navCtrl: NavController,
       private loadingController: LoadingController,
       private modalController: ModalController,
-      private phone_service: CallService
+      private phone_service: CallService,
+      private afs: AngularFirestore,
+      private alertController: AlertController
   ) {
   }
 
@@ -38,7 +41,9 @@ export class HomePage implements OnInit {
 
     await loading.present ();
 
-    this.database.get_cardex_por_fecha ('23-03-2020').subscribe ((res: any) => {
+    let usuario: any = await this.auth.isLogin ();
+
+    this.database.get_cardex_por_fecha (usuario.uid, '23-03-2020').subscribe ((res: any) => {
       console.log (res);
       this.items = res;
       loading.dismiss ();
@@ -80,5 +85,35 @@ export class HomePage implements OnInit {
     });
 
     await modal.present();
+  }
+
+  async salir () {
+    const alert = await this.alertController.create({
+      header: 'Confirm!',
+      message: 'Message <strong>text</strong>!!!',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Okay',
+          handler: async () => {
+            this.auth.signOut ()  
+              .then (() => {
+                this.navCtrl.navigateRoot ('login');
+              })
+              .catch ((error: any) => {
+
+              });
+          }
+        }
+      ]
+    });
+
+    await alert.present ();
   }
 }

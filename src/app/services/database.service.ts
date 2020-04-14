@@ -45,8 +45,8 @@ export class DatabaseService {
     return await this.afs.collection ('Usuarios').doc (uid).valueChanges ().pipe (first ()).toPromise ();
   }
 
-  get_cardex_por_fecha (fecha: string) {
-    return this.afs.collection ('Cardex', ref => ref.where ('fecha', '==', fecha)).valueChanges ();
+  get_cardex_por_fecha (usuario_id: string, fecha: string) {
+    return this.afs.collection ('Cardex', ref => ref.where ('fecha', '==', fecha).where ('conductor_id', '==', usuario_id)).valueChanges ();
   }
 
   get_cardex_by_id (id: string) {
@@ -122,6 +122,14 @@ export class DatabaseService {
     } else if (value === 'hora_fin_ruta') {
       item [value] = firebase.firestore.FieldValue.serverTimestamp ();
       item.estado = 'finalizado';
+    } else if (value === 'hora_ausencia') {
+      if (item.cliente_actual !== null && item.cliente_actual !== undefined) {
+        // cliente.estado = 'ausente';
+      }
+    } else if (value === 'hora_rechazo_total') {
+      if (item.cliente_actual !== null && item.cliente_actual !== undefined) {
+        // cliente.estado = 'ausente';
+      }
     }
 
     if (item.cliente_actual !== null && item.cliente_actual !== undefined) {

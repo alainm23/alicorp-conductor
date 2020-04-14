@@ -1,4 +1,10 @@
 <ion-content [fullscreen]="true">
+  <ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button size="small" color="danger" (click)="call ()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
   <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button size="small" color="light" (click)="call ()">
       <ion-icon name="call"></ion-icon>

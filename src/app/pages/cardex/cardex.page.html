@@ -1,10 +1,10 @@
-<!-- <ion-header>
-  <ion-toolbar>
-
-  </ion-toolbar>
-</ion-header> -->
-
 <ion-content>
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button size="small" color="light" (click)="call ()">
+      <ion-icon name="call"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
   <div id="img_mapa">
     <div #map id="map"></div>
   </div>
@@ -21,7 +21,7 @@
 
       <ion-col size="6">
         <ion-button expand="full" [disabled]="item?.estado === 'finalizado'" (click)="accion ()">
-          {{ botton_accion?.text }}
+          {{ botton_accion?.text }}<br>{{ item?.cliente_actual?.nombre }}
         </ion-button>
       </ion-col>
     </ion-row>

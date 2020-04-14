@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DatabaseService } from '../../services/database.service';
 import { AlertController, NavController, ActionSheetController, ModalController, LoadingController } from '@ionic/angular';
 declare var google: any;
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 // Param
 import { ActivatedRoute } from '@angular/router';
@@ -12,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ChecklistProductoClientePage } from '../../modals/checklist-producto-cliente/checklist-producto-cliente.page';
 import { AlmuerzoPage } from '../../modals/almuerzo/almuerzo.page';
 import { CargaGasolinaPage } from '../../modals/carga-gasolina/carga-gasolina.page';
+import { CallService } from '../../services/call.service';
 
 // Utils
 import { first } from 'rxjs/operators';
@@ -44,8 +46,14 @@ export class CardexPage implements OnInit {
     private alertController: AlertController,
     private actionSheetController: ActionSheetController,
     private modalController: ModalController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private geolocation: Geolocation,
+    private phone_service: CallService,
   ) { }
+
+  call () {
+    this.phone_service.llamar ();
+  }
 
   async ngOnInit() {
     // Verificando ruta
@@ -58,113 +66,143 @@ export class CardexPage implements OnInit {
   }
 
   async init_map () {
-    let clientes: any [] = await this.database.get_clientes_by_cardex (this.route.snapshot.paramMap.get ('id')).pipe (first ()).toPromise ();
-    console.log ('Clientes', clientes);
-    // Agregar aqui las cordenadas exactas del almacen
-    let point_inicio = new google.maps.LatLng (-13.528726, -71.940001);
+    this.geolocation.getCurrentPosition().then(async (resp) => {
+      let clientes: any [] = await this.database.get_clientes_by_cardex (this.route.snapshot.paramMap.get ('id')).pipe (first ()).toPromise ();
+      console.log ('Clientes', clientes);
 
-    let infowindow = new google.maps.InfoWindow ();
+      // Agregar aqui las cordenadas exactas del almacen
+      let point_inicio = new google.maps.LatLng (-13.528726, -71.940001);
 
-    this.directionsService = new google.maps.DirectionsService;
-    this.directionsDisplay = new google.maps.DirectionsRenderer({
-      suppressPolylines: true,
-      suppressMarkers: true,
-      infoWindow: infowindow
-    });
+      let infowindow = new google.maps.InfoWindow ();
 
-    const options = {
-      center: point_inicio,
-      zoom: 15,
-      disableDefaultUI: true,
-      streetViewControl: false,
-      disableDoubleClickZoom: false,
-      clickableIcons: false,
-      scaleControl: true,
-      mapTypeId: 'roadmap'
-    }
-
-    this.map = new google.maps.Map (this.mapRef.nativeElement, options);
-    this.directionsDisplay.setMap (this.map);
-
-    let waypoints: any [] = [];
-    clientes.forEach ((cliente: any) => {
-      waypoints.push ({
-        location: new google.maps.LatLng (cliente.latitud, cliente.longitud),
-        stopover: true
+      this.directionsService = new google.maps.DirectionsService;
+      this.directionsDisplay = new google.maps.DirectionsRenderer({
+        suppressPolylines: true,
+        suppressMarkers: true,
+        infoWindow: infowindow
       });
-    });
 
-    let request = {
-      origin: point_inicio,
-      destination: point_inicio,
-      waypoints: waypoints,
-      optimizeWaypoints: false,
-      provideRouteAlternatives: true,
-      travelMode: google.maps.TravelMode ['DRIVING']
-    }
+      const options = {
+        center: point_inicio,
+        zoom: 15,
+        disableDefaultUI: true,
+        streetViewControl: false,
+        disableDoubleClickZoom: false,
+        clickableIcons: false,
+        scaleControl: true,
+        mapTypeId: 'roadmap'
+      }
 
-    this.directionsService.route (request, (response: any, status: any) => {
-      if (status == 'OK') {
-        this.directionsDisplay.setOptions({
-          directions: response,
+      this.map = new google.maps.Map (this.mapRef.nativeElement, options);
+      this.directionsDisplay.setMap (this.map);
+
+      let waypoints: any [] = [];
+      clientes.forEach ((cliente: any) => {
+        waypoints.push ({
+          location: new google.maps.LatLng (cliente.latitud, cliente.longitud),
+          stopover: true
         });
+      });
+      
+      let request = {
+        origin: point_inicio,
+        destination: waypoints [waypoints.length - 1].location,
+        waypoints: waypoints,
+        optimizeWaypoints: false,
+        provideRouteAlternatives: true,
+        travelMode: google.maps.TravelMode ['DRIVING']
+      }
 
-        let polylineOptions = {
-          strokeColor: '#C83939',
-          strokeOpacity: 1,
-          strokeWeight: 4
-        };
-        let colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"];
-        let polylines = [];
+      this.directionsService.route (request, (response: any, status: any) => {
+        if (status == 'OK') {
+          this.directionsDisplay.setOptions({
+            directions: response,
+          });
 
-        var bounds = new google.maps.LatLngBounds();
-        for (var i = 0; i < polylines.length; i++) {
-          polylines[i].setMap(null);
-        }
-        var legs = response.routes[0].legs;
-        for (let i = 0; i < legs.length; i++) {
-          var steps = legs[i].steps;
-          for (let j = 0; j < steps.length; j++) {
-            var nextSegment = steps[j].path;
-            var stepPolyline = new google.maps.Polyline(polylineOptions);
-            stepPolyline.setOptions({
-              strokeColor: colors[i]
-            })
-            for (let k = 0; k < nextSegment.length; k++) {
-              stepPolyline.getPath().push(nextSegment[k]);
-              bounds.extend(nextSegment[k]);
-            }
-            polylines.push(stepPolyline);
-            stepPolyline.setMap(this.map);
-            // route click listeners, different one on each step
-            google.maps.event.addListener(stepPolyline, 'click', (evt: any) => {
-              infowindow.setContent("you clicked on the route<br>" + evt.latLng.toUrlValue(6));
-              infowindow.setPosition(evt.latLng);
-              infowindow.open(this.map);
-            });
+          let polylineOptions = {
+            strokeColor: '#C83939',
+            strokeOpacity: 1,
+            strokeWeight: 4
+          };
+          let colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"];
+          let polylines = [];
+
+          var bounds = new google.maps.LatLngBounds();
+          for (var i = 0; i < polylines.length; i++) {
+            polylines[i].setMap(null);
           }
-        }
+          var legs = response.routes[0].legs;
+          for (let i = 0; i < legs.length; i++) {
+            var steps = legs[i].steps;
+            for (let j = 0; j < steps.length; j++) {
+              var nextSegment = steps[j].path;
+              var stepPolyline = new google.maps.Polyline(polylineOptions);
+              stepPolyline.setOptions({
+                strokeColor: colors[i]
+              })
+              for (let k = 0; k < nextSegment.length; k++) {
+                stepPolyline.getPath().push(nextSegment[k]);
+                bounds.extend(nextSegment[k]);
+              }
+              polylines.push(stepPolyline);
+              stepPolyline.setMap(this.map);
+              // route click listeners, different one on each step
+              google.maps.event.addListener(stepPolyline, 'click', (evt: any) => {
+                infowindow.setContent("you clicked on the route<br>" + evt.latLng.toUrlValue(6));
+                infowindow.setPosition(evt.latLng);
+                infowindow.open(this.map);
+              });
+            }
+          }
 
-        this.map.fitBounds (bounds);
+          this.map.fitBounds (bounds);
 
-        let marker = new google.maps.Marker({
-          position: point_inicio,
-          label: '1',
-          map: this.map
-        });
-
-        let count: number = 2;
-        response.routes [0].waypoint_order.forEach((element: number) => {
           let marker = new google.maps.Marker({
-            position: waypoints [element].location,
-            label: count.toString (),
+            position: point_inicio,
+            icon: 'assets/img/icono almacen.png',
             map: this.map
           });
 
-          count++;
-        });
-      }
-    });
+          let carro_marker = new google.maps.Marker({
+            position: new google.maps.LatLng (resp.coords.latitude, resp.coords.longitude),
+            icon: 'assets/img/Icono carro.png',
+            map: this.map
+          });
+
+          let count: number = 1;
+          clientes.forEach ((cliente: any) => {
+            let marker = new google.maps.Marker({
+              position: new google.maps.LatLng (cliente.latitud, cliente.longitud),
+              label: { 
+                text: count.toString (),
+                color: "white",
+                fontWeight: 'bold',
+                fontSize: '16px'
+              },
+              map: this.map
+            });
+
+            marker.addListener ('click', async (data: any) => {
+              console.log (cliente);
+              console.log (data.latLng.lat ());
+              console.log (data.latLng.lng ());
+
+              const alert = await this.alertController.create({
+                header: cliente.cliente_nombre,
+                subHeader: cliente.cliente_direccion,
+                buttons: ['OK']
+              });
+          
+              await alert.present();
+            });
+
+            count++;
+          });
+        }
+      });
+     }).catch((error) => {
+       console.log('Error getting location', error);
+     });
   }
 
   async check_ruta () {
@@ -258,7 +296,8 @@ export class CardexPage implements OnInit {
                 await loading.dismiss ();
                 this.open_checklist_modal ();
               })
-              .catch ((error: any) => {
+              .catch (async (error: any) => {
+                await loading.dismiss ();
                 console.log (error);
               });
           }
@@ -267,22 +306,19 @@ export class CardexPage implements OnInit {
           role: 'destructive',
           icon: 'trash',
           handler: () => {
-            console.log('Delete clicked');
+            this.send_alert_notification ('hora_ausencia');
           }
         }, {
           text: 'Notificar rechazo total',
           role: 'destructive',
           icon: 'trash',
           handler: () => {
-            console.log('Delete clicked');
+            this.send_alert_notification ('hora_rechazo_total');
           }
         }, {
           text: 'Cancel',
           icon: 'close',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
+          role: 'cancel'
         }]
       });
 
@@ -326,6 +362,24 @@ export class CardexPage implements OnInit {
 
       await alert.present ();
     }
+  }
+
+  async send_alert_notification (action: string) {
+    const loading = await this.loadingController.create({
+      message: 'Actualizando informacion ...',
+    });
+
+    await loading.present ();
+
+    this.database.update_cliente_cardex_ruta (this.item, this.cliente_actual, action)
+      .then (async () => {
+        await loading.dismiss ();
+        this.check_ruta ();
+      })
+      .catch (async (error: any) => {
+        await loading.dismiss ();
+        console.log (error);
+      });
   }
 
   async eventos () {

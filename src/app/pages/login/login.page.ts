@@ -39,7 +39,7 @@ export class LoginPage implements OnInit {
 
           await loading.dismiss ();
 
-          if (usuario.tipo === "3") {
+          if (usuario.tipo === 3) {
             this.navCtrl.navigateRoot ('home');
           } else {
             this.auth.signOut ();

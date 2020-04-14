@@ -22,6 +22,7 @@ import { AlmuerzoPageModule } from './modals/almuerzo/almuerzo.module';
 import { AlertProductoPageModule } from './modals/alert-producto/alert-producto.module';
 
 import { CallNumber } from '@ionic-native/call-number/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -44,6 +45,7 @@ import { CallNumber } from '@ionic-native/call-number/ngx';
     StatusBar,
     SplashScreen,
     CallNumber,
+    Geolocation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
