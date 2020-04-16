@@ -18,22 +18,24 @@
 	height: 100%;
 }
 
-ion-tabs
+ion-toolbar
 {
-    ion-tab-bar
+    --background: #014A74;
+    --padding-top: 0px;
+    --padding-bottom: 0px;
+    ion-button
     {
-        background-color: #014A74;
-        ion-tab-button
-        {
-            height: 40px;
-            color: #fff;
-            font-family: AvenirMedium; 
-            font-size: 16px;
-            background-color: transparent !important;
-        }
-        .btn_tabs
-        {
-            border-right: 1px solid #fff;
-        }
+        height: 40px;
+        --color: #fff;
+        font-family: AvenirMedium; 
+        font-size: 16px;
+        --background: #014A74;
+        --box-shadow: 0px !important;
+        width: 50%;
     }
+    ion-button.btn_tabs
+    {
+        border-right: 1px solid #fff;
+    }
+    
 }

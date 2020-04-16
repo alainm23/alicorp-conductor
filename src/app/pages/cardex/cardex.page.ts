@@ -277,7 +277,7 @@ export class CardexPage implements OnInit {
   async accion () {
     if (this.botton_accion.accion === 'hora_inicio_descarga') {
       const actionSheet = await this.actionSheetController.create({
-        header: 'Albums',
+        header: 'Operaciones',
         subHeader: '',
         mode: 'md',
         buttons: [{
