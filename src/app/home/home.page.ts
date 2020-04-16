@@ -7,6 +7,7 @@ import { NavController, LoadingController, ModalController, AlertController } fr
 import * as moment from 'moment';
 import { CallService } from '../services/call.service';
 import { AngularFirestore } from '@angular/fire/firestore'
+import * as moment from 'moment';
 
 // Modals
 import { CargaGasolinaPage } from '../modals/carga-gasolina/carga-gasolina.page';
@@ -43,7 +44,7 @@ export class HomePage implements OnInit {
 
     let usuario: any = await this.auth.isLogin ();
 
-    this.database.get_cardex_por_fecha (usuario.uid, '23-03-2020').subscribe ((res: any) => {
+    this.database.get_cardex_por_fechaconductor (usuario.uid, moment ().format ("DD[-]MM[-]YYYY")).subscribe ((res: any) => {
       console.log (res);
       this.items = res;
       loading.dismiss ();

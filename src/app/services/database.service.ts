@@ -45,7 +45,7 @@ export class DatabaseService {
     return await this.afs.collection ('Usuarios').doc (uid).valueChanges ().pipe (first ()).toPromise ();
   }
 
-  get_cardex_por_fecha (usuario_id: string, fecha: string) {
+  get_cardex_por_fechaconductor (usuario_id: string, fecha: string) {
     return this.afs.collection ('Cardex', ref => ref.where ('fecha', '==', fecha).where ('conductor_id', '==', usuario_id)).valueChanges ();
   }
 
