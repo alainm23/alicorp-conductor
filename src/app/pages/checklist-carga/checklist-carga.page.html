@@ -1,6 +1,6 @@
 <ion-content [fullscreen]="true">
   <ion-fab vertical="top" horizontal="end" slot="fixed">
-    <ion-fab-button  style="" size="small" color="light" (click)="call ()">
+    <ion-fab-button size="small" color="light" (click)="call ()">
       <ion-icon name="call"></ion-icon>
     </ion-fab-button>
   </ion-fab>
@@ -15,18 +15,24 @@
         <h5 class="ion-text-center font_subtitulo">Hora de inicio de carga: 08:23</h5>
       </ion-col>
 
-      <ion-col size="12" size-md="10" class="ion-text-center">
+      <ion-col size="10" size-sm="5" size-md="4" class="ion-text-center ion-margin-bottom">
         <ion-badge *ngIf="item?.almacen_valido === false" color="danger">Almacen: Carga sin confirmar</ion-badge>
         <ion-badge *ngIf="item?.almacen_valido === true" color="success">Almacen: Carga confirmada</ion-badge>
       </ion-col>
 
       <ion-col size="12" size-md="10" class="ion-no-padding">
         <ion-row class="ion-justify-content-center">
-          <ion-col size="12" size-sm="6" size-lg="5" class="ion_padding_col">
+          <ion-col size="12" size-sm="10" size-md="11" size-lg="12" class="ion_padding_col">
             <ion-item *ngFor="let producto of productos">
-              <ion-checkbox slot="start" [(ngModel)]="producto.checked"></ion-checkbox>
-              <ion-label>{{ producto.nombre }}</ion-label>
-              <ion-label style="text-align: end;" slot="end">{{ producto.cantidad }} und.</ion-label>
+              <div class="div1">
+                <ion-checkbox slot="start" [(ngModel)]="producto.checked"></ion-checkbox>
+              </div>
+              <div class="div2">
+                <ion-label>{{ producto.nombre }}</ion-label>
+              </div>
+              <div class="div3">
+                <ion-label class="margin_left" style="text-align: end;" slot="end">{{ producto.cantidad }} und.</ion-label>
+              </div>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -37,7 +43,7 @@
 
 <ion-footer>
   <ion-toolbar color="primary" class="ion-text-center">
-    <ion-button color="light" size="small" shape="round" [disabled]="check_disbled_button () || item?.almacen_valido === false" (click)="finalizar_descarga ()">
+    <ion-button [disabled]="check_disbled_button () || item?.almacen_valido === false" (click)="finalizar_descarga ()" class="ion-no-margin">
       Confirmar y finalizar carga
     </ion-button>
   </ion-toolbar>

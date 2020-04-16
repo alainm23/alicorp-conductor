@@ -63,44 +63,57 @@ ion-item
 {
     --padding-start: 0;
     --inner-padding-end: 0;
-    .div_circulo
+    div
     {
-        border: 1px solid #707070;
-        width: 21px;
-        height: 21px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .cuadrado_pequeño
+        ion-label
         {
-            background-color: #55ADE0;
-            border-radius: 2px;
-            height: 15px;
-            width: 15px;
+            color: #6E6E6E;
+            font-size: 0.875rem;
+            font-family: AvenirLight;
+        }
+        ion-label.margin_left
+        {
+            margin-left: 5px;
         }
     }
-    .color_iguales
+    div.div1
     {
-        color: #6E6E6E;
-        font-size: 0.875rem;
-        font-family: AvenirLight;
+        width: 15%;
+    }
+    div.div2
+    {
+        width: 60%;
+    }
+    div.div3
+    {
+        width: 25%;
     }
 }
-ion-tabs
+ion-toolbar
 {
-    ion-tab-bar
+    background-color: #014A74;
+    --padding-top: 14px;
+    height: 65px;
+    ion-button
     {
-        background-color: #014A74;
-        height: 70px;
-        ion-tab-button
-        {
-            border-radius: 19px;
-            height: 40px;
-            color: #6E6E6E;
-            font-family: AvenirMedium; 
-            font-size: 18px;
-        }
+        --background: #fff;
+        --border-radius: 19px;
+        border-radius: 19px;
+        --color: #6E6E6E;
+        font-family: AvenirMedium; 
+        font-size: 15px;
+        width: 90%;
+        --padding-top: 5px;
+        --padding-bottom: 5px;
+        height: 37px;
     }
+}
+ion-badge
+{
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 19px;
 }
 @media (min-width: 640px)
 {
@@ -109,6 +122,14 @@ ion-tabs
    {
        padding-left: 7px;
        padding-right: 7px;
+   }
+   ion-toolbar
+   {
+        --padding-top: 14px;
+        ion-button
+        {
+            width: 55%;
+        }
    }
 }
 @media (min-width: 768px)
@@ -124,5 +145,16 @@ ion-tabs
         {
             font-size: 1.875rem;
         }
+    }
+    ion-toolbar
+    {
+         --padding-top: 16px;
+         height: 90px;
+         ion-button
+         {
+             width: 70%;
+             height: 58px;
+             font-size: 25px;
+         }
     }
 }

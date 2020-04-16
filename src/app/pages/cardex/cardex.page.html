@@ -11,20 +11,28 @@
 </ion-content>
 
 <ion-footer>
-  <ion-toolbar>
+  <!--<ion-toolbar>
     <ion-row>
-      <ion-col size="6">
-        <ion-button expand="full" (click)="eventos ()">
+      <ion-col size="6" class="ion-no-padding">
+        <ion-button expand="full" (click)="eventos ()" class="ion-no-margin btn_tabs">
           Eventos
         </ion-button>
       </ion-col>
 
-      <ion-col size="6">
-        <ion-button expand="full" [disabled]="item?.estado === 'finalizado'" (click)="accion ()">
+      <ion-col size="6" class="ion-no-padding">
+        <ion-button expand="full" [disabled]="item?.estado === 'finalizado'" (click)="accion ()" class="ion-no-margin">
           {{ botton_accion?.text }}<br>{{ item?.cliente_actual?.nombre }}
         </ion-button>
       </ion-col>
     </ion-row>
+  </ion-toolbar>-->
+  <ion-toolbar class="ion-no-padding">
+      <ion-button class="ion-no-margin btn_tabs" (click)="eventos ()">
+        Eventos
+      </ion-button>
+      <ion-button [disabled]="item?.estado === 'finalizado'" (click)="accion ()" class="ion-no-margin">
+        <span>{{ botton_accion?.text }}</span><span>{{ item?.cliente_actual?.nombre }}</span>
+      </ion-button>
   </ion-toolbar>
 </ion-footer>
 <!-- <ion-footer>
